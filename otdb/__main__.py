@@ -19,7 +19,7 @@ RESPONSES = [
 ]
 
 async def add_todo(message):
-    todo_string = quote(f'- [ ] #task {message.content}')
+    todo_string = quote(f'- [ ] #task {message.content.lower()}')
     proc = await asyncio.create_subprocess_exec(
         '/usr/bin/xdg-open',
         f"obsidian://new?silent&vault=household-vault&append&file=meta%2fTask%20list&content={todo_string}",
@@ -35,7 +35,7 @@ async def handle_cli(message):
     if message.content == 'groceries':
         proc = await asyncio.create_subprocess_shell(
             f'find {VAULT_DIR} -name "*.md" -exec grep -e "^- \\[ \\]" {{}} \\; '
-            '| grep "#task" | grep "#grocery"',
+            '| grep "#task" | grep -i "#grocery"',
             stdout=asyncio.subprocess.PIPE,
         )
         stdout, stderr = await proc.communicate(None)
